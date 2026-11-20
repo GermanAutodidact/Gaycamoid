@@ -82,9 +82,9 @@ class AKCOMMONS_EXPORT AkCaps: public QObject
     public Q_SLOTS:
         static void registerTypes();
 
-    friend QDebug operator <<(QDebug debug, const AkCaps &caps);
-    friend QDataStream &operator >>(QDataStream &istream, AkCaps &caps);
-    friend QDataStream &operator <<(QDataStream &ostream, const AkCaps &caps);
+    friend AKCOMMONS_EXPORT QDebug operator <<(QDebug debug, const AkCaps &caps);
+    friend AKCOMMONS_EXPORT QDataStream &operator >>(QDataStream &istream, AkCaps &caps);
+    friend AKCOMMONS_EXPORT QDataStream &operator <<(QDataStream &ostream, const AkCaps &caps);
     friend class AkAudioCaps;
     friend class AkCapsPrivate;
     friend class AkCompressedAudioCaps;
