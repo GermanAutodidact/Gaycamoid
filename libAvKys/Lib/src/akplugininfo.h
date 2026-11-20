@@ -83,7 +83,7 @@ class AKCOMMONS_EXPORT AkPluginInfo: public QObject
         static void registerTypes();
 
     friend class AkPluginManager;
-    friend QDataStream &operator >>(QDataStream &istream, AkPluginInfo &info);
+    friend AKCOMMONS_EXPORT QDataStream &operator >>(QDataStream &istream, AkPluginInfo &info);
 };
 
 AKCOMMONS_EXPORT QDebug operator <<(QDebug debug, const AkPluginInfo &info);
