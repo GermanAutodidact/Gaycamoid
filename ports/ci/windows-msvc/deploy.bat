@@ -5,34 +5,36 @@ REM Webcamoid is free software: you can redistribute it and/or modify
 REM it under the terms of the GNU General Public License as published by
 REM the Free Software Foundation, either version 3 of the License, or
 REM (at your option) any later version.
-REM
-REM Webcamoid is distributed in the hope that it will be useful,
-REM but WITHOUT ANY WARRANTY; without even the implied warranty of
-REM MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-REM GNU General Public License for more details.
-REM
-REM You should have received a copy of the GNU General Public License
-REM along with Webcamoid. If not, see <http://www.gnu.org/licenses/>.
-REM
-REM Web-Site: http://webcamoid.github.io/
 
-if not "%GITHUB_SHA%" == "" set GIT_COMMIT_HASH="%GITHUB_SHA%"
+@echo off
+setlocal
 
-if not "%GITHUB_REF_NAME%" == "" set GIT_BRANCH_NAME="%GITHUB_REF_NAME%"
-if not "%GIT_BRANCH_NAME%" == "" set GIT_BRANCH_NAME=master
+if not "%GITHUB_SHA%" == "" set "GIT_COMMIT_HASH=%GITHUB_SHA%"
+if not "%GITHUB_REF_NAME%" == "" set "GIT_BRANCH_NAME=%GITHUB_REF_NAME%"
+if "%GIT_BRANCH_NAME%" == "" set "GIT_BRANCH_NAME=master"
 
-git clone "https://github.com/webcamoid/DeployTools.git"
+git clone --depth 1 "https://github.com/webcamoid/DeployTools.git"
+if errorlevel 1 exit /b 1
 
-set QTDIR=C:\Qt\%QTVER%\msvc2019_64
-set TOOLSDIR=C:\Qt\Tools\QtCreator
-set FFMPEG_PATH=%CD%\ffmpeg-%FFMPEG_VERSION%-full_build-shared
-set PATH=%QTDIR%\bin;%TOOLSDIR%\bin;%FFMPEG_PATH%\bin;%PATH%
-set INSTALL_PREFIX=%CD%/webcamoid-data
-set PACKAGES_DIR=%CD%/webcamoid-packages/windows
-set BUILD_PATH=%CD%/build
-set PYTHONPATH=%CD%/DeployTools
+set "QTDIR=C:\Qt\%QTVER%\msvc2022_64"
+set "TOOLSDIR=C:\Qt\Tools\QtCreator"
+set "FFMPEG_PATH=%CD%\ffmpeg-%FFMPEG_VERSION%-full_build-shared"
+set "PATH=%QTDIR%\bin;%TOOLSDIR%\bin;%FFMPEG_PATH%\bin;%PATH%"
+set "INSTALL_PREFIX=%CD%\webcamoid-data"
+set "PACKAGES_DIR=%CD%\webcamoid-packages\windows"
+set "BUILD_PATH=%CD%\build"
+set "PYTHONPATH=%CD%\DeployTools"
 
-python DeployTools/deploy.py ^
-    -d "%INSTALL_PREFIX%" ^
-    -c "%BUILD_PATH%/package_info.conf" ^
-    -o "%PACKAGES_DIR%"
+python DeployTools/deploy.py -d "%INSTALL_PREFIX%" -c "%BUILD_PATH%\package_info.conf" -o "%PACKAGES_DIR%"
+if errorlevel 1 exit /b 1
+
+if not exist "%PACKAGES_DIR%\*.exe" (
+    echo NSIS installer was not generated.
+    exit /b 1
+)
+if not exist "%PACKAGES_DIR%\*.zip" (
+    echo ZIP package was not generated.
+    exit /b 1
+)
+
+endlocal
