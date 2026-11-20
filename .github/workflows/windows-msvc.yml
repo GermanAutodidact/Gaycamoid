@@ -1,6 +1,8 @@
-name: Windows MSVC
+name: Windows x64 Build
 
-on: workflow_dispatch
+on:
+  push:
+  workflow_dispatch:
 
 env:
   QTVER: 6.10.2
@@ -9,26 +11,39 @@ env:
 
 jobs:
   build:
+    name: Build Windows x64 installer
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v6
-      with:
-        submodules: false
-    - name: Install dependencies
-      run: ./ports/ci/windows-msvc/install_deps.bat
-    - name: Release Build
-      if: ${{ startsWith(github.ref, 'refs/tags/') }}
-      run: ./ports/ci/windows-msvc/build.bat
-    - name: Release Deploy
-      if: ${{ startsWith(github.ref, 'refs/tags/') }}
-      run: ./ports/ci/windows-msvc/deploy.bat
-    - name: Daily Build
-      if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      env:
-        DAILY_BUILD: 1
-      run: ./ports/ci/windows-msvc/build.bat
-    - name: Daily Deploy
-      if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      env:
-        DAILY_BUILD: 1
-      run: ./ports/ci/windows-msvc/deploy.bat
+      - name: Checkout source
+        uses: actions/checkout@v6
+        with:
+          submodules: false
+
+      - name: Install dependencies
+        shell: cmd
+        run: ports\ci\windows-msvc\install_deps.bat
+
+      - name: Build release binaries
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        shell: cmd
+        run: ports\ci\windows-msvc\build.bat
+
+      - name: Build daily binaries
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: cmd
+        env:
+          DAILY_BUILD: 1
+        run: ports\ci\windows-msvc\build.bat
+
+      - name: Create Windows installer and ZIP
+        shell: cmd
+        run: ports\ci\windows-msvc\deploy.bat
+
+      - name: Upload Windows x64 packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: Webcamoid-Windows-x64
+          path: webcamoid-packages/windows/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
