@@ -1,20 +1,5 @@
 /* Webcamoid, camera capture application.
  * Copyright (C) 2016  Gonzalo Exequiel Pedone
- *
- * Webcamoid is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Webcamoid is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Webcamoid. If not, see <http://www.gnu.org/licenses/>.
- *
- * Web-Site: http://webcamoid.github.io/
  */
 
 #ifndef AKPACKET_H
@@ -33,15 +18,9 @@ class AkVideoPacket;
 class AKCOMMONS_EXPORT AkPacket: public AkPacketBase
 {
     Q_OBJECT
-    Q_PROPERTY(AkCaps caps
-               READ caps
-               CONSTANT)
-    Q_PROPERTY(PacketType type
-               READ type
-               CONSTANT)
-    Q_PROPERTY(size_t size
-               READ size
-               CONSTANT)
+    Q_PROPERTY(AkCaps caps READ caps CONSTANT)
+    Q_PROPERTY(PacketType type READ type CONSTANT)
+    Q_PROPERTY(size_t size READ size CONSTANT)
 
     public:
         enum PacketType
@@ -69,19 +48,16 @@ class AKCOMMONS_EXPORT AkPacket: public AkPacketBase
 
     private:
         AkPacketPrivate *d;
-
         using DataCopy = void *(*)(void *data);
         using DataDeleter = void (*)(void *data);
         void *privateData() const;
-        void setPrivateData(void *data,
-                            DataCopy copyFunc,
-                            DataDeleter deleterFunc);
+        void setPrivateData(void *data, DataCopy copyFunc, DataDeleter deleterFunc);
         void setType(AkPacket::PacketType type);
 
     public Q_SLOTS:
         static void registerTypes();
 
-    friend QDebug operator <<(QDebug debug, const AkPacket &packet);
+    friend AKCOMMONS_EXPORT QDebug operator <<(QDebug debug, const AkPacket &packet);
     friend class AkPacketPrivate;
     friend class AkAudioPacket;
     friend class AkCompressedAudioPacket;

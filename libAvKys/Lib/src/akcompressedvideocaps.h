@@ -1,27 +1,11 @@
 /* Webcamoid, camera capture application.
  * Copyright (C) 2022  Gonzalo Exequiel Pedone
- *
- * Webcamoid is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Webcamoid is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Webcamoid. If not, see <http://www.gnu.org/licenses/>.
- *
- * Web-Site: http://webcamoid.github.io/
  */
 
 #ifndef AKCOMPRESSEDVIDEOCAPS_H
 #define AKCOMPRESSEDVIDEOCAPS_H
 
 #include <QObject>
-
 #include "akcommons.h"
 
 class AkCompressedVideoCapsPrivate;
@@ -32,45 +16,31 @@ class AkVideoCaps;
 class AKCOMMONS_EXPORT AkCompressedVideoCaps: public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(VideoCodecID codec
-               READ codec
-               WRITE setCodec
-               RESET resetCodec
-               NOTIFY codecChanged)
-    Q_PROPERTY(AkVideoCaps rawCaps
-               READ rawCaps
-               WRITE setRawCaps
-               RESET resetRawCaps
-               NOTIFY rawCapsChanged)
-    Q_PROPERTY(int bitrate
-               READ bitrate
-               WRITE setBitrate
-               RESET resetBitrate
-               NOTIFY bitrateChanged)
+    Q_PROPERTY(VideoCodecID codec READ codec WRITE setCodec RESET resetCodec NOTIFY codecChanged)
+    Q_PROPERTY(AkVideoCaps rawCaps READ rawCaps WRITE setRawCaps RESET resetRawCaps NOTIFY rawCapsChanged)
+    Q_PROPERTY(int bitrate READ bitrate WRITE setBitrate RESET resetBitrate NOTIFY bitrateChanged)
 
     public:
         enum VideoCodecID
         {
             VideoCodecID_unknown = AK_MAKE_FOURCC(0, 0, 0, 0),
-            VideoCodecID_av1     = AK_MAKE_FOURCC('A', 'V', '1', 0),
-            VideoCodecID_h264    = AK_MAKE_FOURCC('A', 'V', 'C', 0),
-            VideoCodecID_hevc    = AK_MAKE_FOURCC('H', 'E', 'V', 'C'),
-            VideoCodecID_jpeg    = AK_MAKE_FOURCC('J', 'P', 'G', 0),
-            VideoCodecID_mjpeg   = AK_MAKE_FOURCC('M', 'J', 'P', 'G'),
-            VideoCodecID_mpeg1   = AK_MAKE_FOURCC('M', 'P', 'G', '1'),
-            VideoCodecID_mpeg2   = AK_MAKE_FOURCC('M', 'P', 'G', '2'),
-            VideoCodecID_mpeg4   = AK_MAKE_FOURCC('M', 'P', 'G', '4'),
-            VideoCodecID_theora  = AK_MAKE_FOURCC('T', 'H', 'E', 'O'),
-            VideoCodecID_vp8     = AK_MAKE_FOURCC('V', 'P', '8', 0),
-            VideoCodecID_vp9     = AK_MAKE_FOURCC('V', 'P', '9', 0),
+            VideoCodecID_av1 = AK_MAKE_FOURCC('A', 'V', '1', 0),
+            VideoCodecID_h264 = AK_MAKE_FOURCC('A', 'V', 'C', 0),
+            VideoCodecID_hevc = AK_MAKE_FOURCC('H', 'E', 'V', 'C'),
+            VideoCodecID_jpeg = AK_MAKE_FOURCC('J', 'P', 'G', 0),
+            VideoCodecID_mjpeg = AK_MAKE_FOURCC('M', 'J', 'P', 'G'),
+            VideoCodecID_mpeg1 = AK_MAKE_FOURCC('M', 'P', 'G', '1'),
+            VideoCodecID_mpeg2 = AK_MAKE_FOURCC('M', 'P', 'G', '2'),
+            VideoCodecID_mpeg4 = AK_MAKE_FOURCC('M', 'P', 'G', '4'),
+            VideoCodecID_theora = AK_MAKE_FOURCC('T', 'H', 'E', 'O'),
+            VideoCodecID_vp8 = AK_MAKE_FOURCC('V', 'P', '8', 0),
+            VideoCodecID_vp9 = AK_MAKE_FOURCC('V', 'P', '9', 0),
         };
         Q_ENUM(VideoCodecID)
         using VideoCodecList = QList<VideoCodecID>;
 
         AkCompressedVideoCaps(QObject *parent=nullptr);
-        AkCompressedVideoCaps(VideoCodecID codec,
-                              const AkVideoCaps &rawCaps,
-                              int bitrate=0);
+        AkCompressedVideoCaps(VideoCodecID codec, const AkVideoCaps &rawCaps, int bitrate=0);
         AkCompressedVideoCaps(const AkCaps &other);
         AkCompressedVideoCaps(const AkCompressedCaps &other);
         AkCompressedVideoCaps(const AkCompressedVideoCaps &other);
@@ -88,15 +58,11 @@ class AKCOMMONS_EXPORT AkCompressedVideoCaps: public QObject
         Q_INVOKABLE static QObject *create(const AkCaps &caps);
         Q_INVOKABLE static QObject *create(const AkCompressedCaps &caps);
         Q_INVOKABLE static QObject *create(const AkCompressedVideoCaps &caps);
-        Q_INVOKABLE static QObject *create(VideoCodecID codec,
-                                           const AkVideoCaps &rawCaps,
-                                           int bitrate=0);
+        Q_INVOKABLE static QObject *create(VideoCodecID codec, const AkVideoCaps &rawCaps, int bitrate=0);
         Q_INVOKABLE QVariant toVariant() const;
-
         Q_INVOKABLE VideoCodecID codec() const;
         Q_INVOKABLE AkVideoCaps rawCaps() const;
         Q_INVOKABLE int bitrate() const;
-
         Q_INVOKABLE static QString videoCodecIDToString(AkCompressedVideoCaps::VideoCodecID codecID);
 
     private:
@@ -116,7 +82,7 @@ class AKCOMMONS_EXPORT AkCompressedVideoCaps: public QObject
         void resetBitrate();
         static void registerTypes();
 
-        friend bool operator <(const AkCompressedVideoCaps &caps1, const AkCompressedVideoCaps &caps2);
+    friend AKCOMMONS_EXPORT bool operator <(const AkCompressedVideoCaps &caps1, const AkCompressedVideoCaps &caps2);
 };
 
 AKCOMMONS_EXPORT QDebug operator <<(QDebug debug, const AkCompressedVideoCaps &caps);

@@ -5,16 +5,6 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * Webcamoid is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Webcamoid. If not, see <http://www.gnu.org/licenses/>.
- *
- * Web-Site: http://webcamoid.github.io/
  */
 
 #ifndef AKCOMPRESSEDPACKET_H
@@ -33,15 +23,9 @@ using AkCompressedPackets = QVector<AkCompressedPacket>;
 class AKCOMMONS_EXPORT AkCompressedPacket: public AkPacketBase
 {
     Q_OBJECT
-    Q_PROPERTY(AkCompressedCaps caps
-               READ caps
-               CONSTANT)
-    Q_PROPERTY(PacketType type
-               READ type
-               CONSTANT)
-    Q_PROPERTY(size_t size
-               READ size
-               CONSTANT)
+    Q_PROPERTY(AkCompressedCaps caps READ caps CONSTANT)
+    Q_PROPERTY(PacketType type READ type CONSTANT)
+    Q_PROPERTY(size_t size READ size CONSTANT)
 
     public:
         enum PacketType
@@ -66,19 +50,16 @@ class AKCOMMONS_EXPORT AkCompressedPacket: public AkPacketBase
 
     private:
         AkCompressedPacketPrivate *d;
-
         using DataCopy = void *(*)(void *data);
         using DataDeleter = void (*)(void *data);
         void *privateData() const;
-        void setPrivateData(void *data,
-                            DataCopy copyFunc,
-                            DataDeleter deleterFunc);
+        void setPrivateData(void *data, DataCopy copyFunc, DataDeleter deleterFunc);
         void setType(PacketType type);
 
     public Q_SLOTS:
         static void registerTypes();
 
-    friend QDebug operator <<(QDebug debug, const AkCompressedPacket &packet);
+    friend AKCOMMONS_EXPORT QDebug operator <<(QDebug debug, const AkCompressedPacket &packet);
     friend class AkCompressedPacketPrivate;
     friend class AkCompressedAudioPacket;
     friend class AkCompressedVideoPacket;
