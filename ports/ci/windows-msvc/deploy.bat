@@ -18,7 +18,17 @@ if errorlevel 1 exit /b 1
 
 set "QTDIR=C:\Qt\%QTVER%\msvc2022_64"
 set "TOOLSDIR=C:\Qt\Tools\QtCreator"
-set "FFMPEG_PATH=%CD%\ffmpeg-%FFMPEG_VERSION%-full_build-shared"
+set "FFMPEG_DIR=%CD%\ffmpeg"
+set "FFMPEG_PATH="
+for /r "%FFMPEG_DIR%" %%F in (avcodec.h) do (
+    if exist "%%~dpF..\..\lib\avcodec.lib" (
+        for %%R in ("%%~dpF..\..") do set "FFMPEG_PATH=%%~fR"
+    )
+)
+if not defined FFMPEG_PATH (
+    echo FFmpeg headers or MSVC import libraries were not found. Run install_deps.bat first.
+    exit /b 1
+)
 set "PATH=%QTDIR%\bin;%TOOLSDIR%\bin;%FFMPEG_PATH%\bin;%PATH%"
 set "INSTALL_PREFIX=%CD%\webcamoid-data"
 set "PACKAGES_DIR=%CD%\webcamoid-packages\windows"

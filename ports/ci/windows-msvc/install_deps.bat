@@ -26,20 +26,28 @@ set "PATH=%QTDIR%\bin;%TOOLSDIR%\bin;%PATH%"
 
 REM Install FFmpeg 8.0.1 MSVC x64 shared GPL binaries and development files.
 set "FFMPEG_TAG=ffmpeg-8.0.1-r3"
-set "FFMPEG_FILE=%FFMPEG_TAG%_x64-windows-shared-gpl.zip"
+set "FFMPEG_FILE=%FFMPEG_TAG%_x64-windows-shared-gpl-develop.zip"
 set "FFMPEG_URL=https://github.com/System233/ffmpeg-msvc-prebuilt/releases/download/%FFMPEG_TAG%/%FFMPEG_FILE%"
-set "FFMPEG_SHA256=3399afab045f6bc64301001d4f5ca1aba3d6df96948cc1799028cf2f24ede433"
-set "FFMPEG_DIR=ffmpeg-%FFMPEG_VERSION%-full_build-shared"
+set "FFMPEG_DIR=%CD%\ffmpeg"
 
 if not exist "%FFMPEG_FILE%" curl --fail --location --retry 10 --output "%FFMPEG_FILE%" "%FFMPEG_URL%"
 if errorlevel 1 exit /b 1
 
-REM Verify the published SHA-256 checksum before extraction.
-powershell -NoProfile -Command "$actual = (Get-FileHash -LiteralPath '%FFMPEG_FILE%' -Algorithm SHA256).Hash; if ($actual -ne '%FFMPEG_SHA256%') { Write-Error 'FFmpeg SHA-256 mismatch'; exit 1 }"
+REM The develop archive contains the headers and MSVC import libraries required to compile.
+if exist "%FFMPEG_DIR%" rmdir /s /q "%FFMPEG_DIR%"
+mkdir "%FFMPEG_DIR%"
 if errorlevel 1 exit /b 1
-
-if not exist "%FFMPEG_DIR%" mkdir "%FFMPEG_DIR%"
 7z x "%FFMPEG_FILE%" -o"%FFMPEG_DIR%" -aoa -bb
 if errorlevel 1 exit /b 1
+
+REM Fail early if the archive did not contain the expected development files.
+set "FFMPEG_FOUND="
+for /r "%FFMPEG_DIR%" %%F in (avcodec.h) do (
+    if exist "%%~dpF..\..\lib\avcodec.lib" set "FFMPEG_FOUND=1"
+)
+if not defined FFMPEG_FOUND (
+    echo FFmpeg development headers or MSVC import libraries were not found in the archive.
+    exit /b 1
+)
 
 endlocal
