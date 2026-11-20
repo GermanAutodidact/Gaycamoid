@@ -13,7 +13,7 @@ python -m pip install aqtinstall
 if errorlevel 1 exit /b 1
 
 REM Install Qt for the Visual Studio 2022 x64 toolchain, including Qt Multimedia.
-aq t install-qt windows desktop "%QTVER%" win64_msvc2022_64 -m qtmultimedia -O "C:\Qt"
+aqt install-qt windows desktop "%QTVER%" win64_msvc2022_64 -m qtmultimedia -O "C:\Qt"
 if errorlevel 1 exit /b 1
 
 REM Verify that the CMake package required by libAvKys/Lib/CMakeLists.txt is present.
